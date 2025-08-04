@@ -1,0 +1,94 @@
+# init
+
+functions.py
+
+
+# format
+
+format_gene_info.py:  orig/RawCount*.tsv -> gene_info.csv
+format_data_orig.py:  orig/RawCount*.tsv, gene_info.csv -> data_count.csv
+format_data_count.py: data_count.csv, gene_info.csv -> data_norm.csv
+format_data_norm.py:  data_norm.csv -> data_norm_adj.csv
+format_info_part1.py: info_part1.csv -> info_part1_fmt.csv
+format_info_part2.py: info_part2.csv -> info_part2_fmt.csv
+format_info_part3.py: info_part3.csv -> info_part3_fmt.csv
+format_info_part2_3_fmt.py: info_part{2,3}_fmt.csv -> info.csv
+format_read_info.py:  orig/Map_stat*.tsv -> read_info.csv
+format_sample_info.py: sample_info.xlsx -> sample_info.csv
+format_deg_list.py: deg/*_gene.csv -> deg/deg_summary_gene.csv
+format_sfg_list.py: sfg/*_gene.csv -> sfg/sfg_summary_gene.csv
+format_go_for_remark.py: *_summary_go.csv -> remark
+format_gene_for_remark.py: *_summary_gene.csv -> remark
+
+# load
+
+load_data.py
+
+# plot
+
+plot_pca_all.py
+plot_pca_all_nolta.py
+plot_pca_organ.py
+plot_heatmap_deg.py # mean
+plot_heatmap.py     # all samples
+plot_heatmap_nolta.py
+plot_heatmap_deg_organ.py  # for calc_deg_organ.py
+plot_heatmap_deg_organ2.py # without top 20
+plot_heatmap_sfg_marked.py
+plot_heatmap_sfg_marked_nolta.py  # non-robust
+plot_heatmap_sfg_marked_nolta2.py # robust
+plot_info.py
+plot_info_nolta.py
+plot_info_recover.py
+plot_rp.py
+plot_high_skew_gene.py
+plot_overlap.py   # deg and sfg
+plot_overlap2.py  # b6 and tsod
+plot_overlap3.py  # single file, with title
+plot_overlap3_nolta.py
+plot_max_eigval.py
+plot_max_eigval2.py # c1 only
+plot_string.py  # blue
+plot_string2.py # colorful
+plot_string2_nolta.py
+plot_venn.py
+plot_umap_all.py
+plot_gene.py  # heatmap
+plot_gene2.py # line chart
+
+# calc
+
+calc_sfg.py  # mean shift
+calc_sfg2.py # each time point
+calc_deg.py
+calc_deg_organ.py
+calc_drop_list.py
+
+# enrichment
+
+enrichment.py
+plot_enrichment_nolta.py
+
+# check
+
+check_data_norm_dist.py
+check_data_count_dist.py   # line charts
+check_data_count_dist2.py  # histgram
+check_info_part1_2.py
+check_pca.py
+check_heatmap_organ.py  # used for making drop list
+check_heatmap_count.py
+check_rpl_rps.py   # heatmap
+check_rpl_rps2.py  # scatter
+check_rpl_rps3.py  # correlated genes
+check_rpl_rps4.py  # rp proportion
+check_skew1.py # dist
+check_skew2.py # box
+check_skew3.py # deg heatmap
+check_skew4.py # top 10
+check_sample_info.py
+check_rp_adjust.py
+check_featureCounts.py  # diff & skew
+check_featureCounts2.py # scatter
+check_circadian.py
+check_sfg_top.py
