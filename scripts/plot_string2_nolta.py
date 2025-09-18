@@ -80,6 +80,8 @@ def plot_string2_nolta(file_name, file_postfix=None):
     fig.savefig('tmp.png')
   else:
     fig.savefig(f'tmp_{file_postfix}.png')
+  sr_out = pd.Series(list(G.nodes)).str.replace('\n','')
+  sr_out.sort_values().to_csv('tmp.csv', index=False, header=False)
   return G
 
 if __name__ == '__main__':

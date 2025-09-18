@@ -104,6 +104,84 @@ def calc_overlap_gene():
   df = pd.concat(out_list, axis=0)
   df.to_csv('tmp.csv', index=False)
 
+def gen_sra_metadata():
+  organ = 'sol'
+  organ_title = 'soleus muscle'
+  t_list = ['0d','1d','3d','1w','10d','2w','3w','4w','5w','6w','7w',
+            '8w','10w','12w','16w','20w']
+  date_list = ['2023-02-14','2023-02-15','2023-02-17','2023-02-21',
+               '2023-02-24','2023-02-28','2023-03-07','2023-03-14',
+               '2023-03-21','2023-03-28','2023-04-04','2023-04-11',
+               '2023-04-25','2023-05-09','2023-06-06','2023-07-04']
+  df = pd.DataFrame()
+  df['time'] = np.repeat(np.array(t_list), 6)
+  df['dissect'] = np.repeat(np.array(date_list), 6)
+  df['replicate'] = np.tile(np.arange(6)+1, len(t_list)).astype(str)
+  df['sample_name'] = 'b6_' + organ + '_' + df.time + '_rep' + df.replicate
+  df['time_title'] = df.time.str.replace('d',' days').\
+    str.replace('w',' weeks').str.replace('1 days','1 day').\
+    str.replace('1 weeks','1 week')
+  df['sample_title'] = 'C57BL/6, ' + organ_title + ', HFD ' + \
+    df.time_title + ', replicate ' + df.replicate
+  sr = df.time.str.replace('1d','0w').str.replace('3d','0w').\
+    str.replace('10d','1w').str[:-1].astype(int) + 8
+  df['age'] = sr.astype(str) + ' weeks'
+  df['library_id'] = organ + '_' + df.time + '_' + df.replicate
+  df['file_name'] = df.library_id + '.bam'
+  df['library_title'] = 'RNA-seq of Mus musculus: adult male ' + \
+    organ_title + ' (HFD ' + df.time_title + ')'
+  if organ != 'ewat':
+    df = df[~df.time.isin(['16w','20w'])]
+  df.to_csv('tmp.csv', index=False)
+  return df
+
+def rename_bam():
+  return 0
+  dir_name = '/home/oku/test/ewat'
+  file_list = os.listdir(dir_name)
+  file_list.sort()
+  for old_name in file_list:
+    organ, sample, time = old_name.split('.')[0].split('_')
+    new_name = f'{organ}_{time}_{sample[-1]}.bam'
+    old_path = os.path.join(dir_name, old_name)
+    new_path = os.path.join(dir_name, new_name)
+    os.rename(old_path, new_path)
+
+def format_sra_run_table():
+  file_name = '../data/SraRunTable.csv'
+  df = pd.read_csv(file_name)
+  df = df[['Run','BioSample','Experiment','Library Name','tissue']]
+  df.columns = ['run','sample','experiment','sample_id','tissue']
+  df['organ'] = df.sample_id.str.split('_').str[0]
+  df['time']  = df.sample_id.str.split('_').str[1]
+  df['rep']   = df.sample_id.str.split('_').str[2]
+  sr = df.time.str[:-1].astype(int)
+  sr[df.time.str[-1]=='w'] *= 7
+  df['day'] = sr
+  df = df.sort_values(['organ','day','rep'])
+  df['title'] = df.tissue + ', HFD ' + df.time + ', rep' + df.rep
+  df['treatment'] = 'HFD ' + df.time
+  df.to_csv('tmp.csv', index=False)
+  return df
+
+def format_lcc():
+  dir_path = '../data/sfg'
+  file_list = os.listdir(dir_path)
+  file_list.sort()
+  out_list = []
+  for file_name in file_list:
+    if 'lcc' not in file_name:
+      continue
+    file_path = os.path.join(dir_path, file_name)
+    organ, clust_no, _ = file_name.split('_')
+    df = pd.read_csv(file_path, header=None)
+    df.columns = ['gene']
+    df.insert(0, 'organ', organ)
+    df.insert(1, 'clust_no', clust_no[1])
+    out_list.append(df)
+  df = pd.concat(out_list, axis=0)
+  df.to_csv('tmp.csv', index=False)
+
 if __name__ == '__main__':
   #check_sol_atp5(data_df)
   #hoge = format_david_demo(2)
@@ -113,4 +191,8 @@ if __name__ == '__main__':
   #format_peak_summary(df_max_eigval)
   #check_david_string_mapped()
   #check_periodic()
-  calc_overlap_gene()
+  #calc_overlap_gene()
+  #hoge = gen_sra_metadata()
+  #rename_bam()
+  #hoge = format_sra_run_table()
+  format_lcc()

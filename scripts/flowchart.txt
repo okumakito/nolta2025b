@@ -92,3 +92,4 @@ check_featureCounts.py  # diff & skew
 check_featureCounts2.py # scatter
 check_circadian.py
 check_sfg_top.py
+check_table2_nolta.py
